@@ -12,7 +12,19 @@ export async function listarUsuariosRepository(): Promise<UsuarioPublico[]> {
     `);
 
     return resultado.rows;
-} 
+}
+
+export async function buscarUsuarioPorEmail(email: string): Promise<UsuarioPublico | null> {
+    const resultado = await pool.query<UsuarioPublico>(`
+        SELECT
+        id,
+        nome,
+        email,
+        criado_em as "criadoEm" 
+        FROM usuarios WHERE email = $1`, [email]);
+
+    return resultado.rows[0] ?? null;
+}
 
 export async function cadastrarUsuarioRepository(dados: DadosNovoUsuario): Promise<UsuarioPublico> {
     const { nome, email, senhaHash } = dados;
@@ -34,16 +46,4 @@ export async function cadastrarUsuarioRepository(dados: DadosNovoUsuario): Promi
     }
 
     return usuario;
-}
-
-export async function buscarUsuarioPorEmail(email: string): Promise<UsuarioPublico | null> {
-    const resultado = await pool.query<UsuarioPublico>(`
-        SELECT
-        id,
-        nome,
-        email,
-        criado_em as "criadoEm" 
-        FROM usuarios WHERE email = $1`, [email]);
-
-    return resultado.rows[0] || null;
 }
