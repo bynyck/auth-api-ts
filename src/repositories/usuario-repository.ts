@@ -43,7 +43,7 @@ export async function buscarUsuarioPorEmail(email: string): Promise<UsuarioPubli
         nome,
         email,
         criado_em as "criadoEm" 
-        FROM usuario WHERE email = $1`, [email]);
+        FROM usuarios WHERE email = $1`, [email]);
 
     return resultado.rows[0] || null;
 }
