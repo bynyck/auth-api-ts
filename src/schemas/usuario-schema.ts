@@ -6,5 +6,11 @@ export const cadastrarUsuarioSchema = z.strictObject({
     senha: z.string().min(4, "Senha deve ter no mínimo 4 caracteres")
 })
 
+export const loginUsuarioSchema = z.strictObject({
+    email: z.email("E-mail inválido"),
+    senha: z.string().min(4, "Senha deve ter no mínimo 4 caracteres")
+})
 
 export type DadosCadastroUsuario = z.infer<typeof cadastrarUsuarioSchema>;
+
+export type DadosLoginUsuario = z.infer<typeof loginUsuarioSchema>;
