@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { listarUsuariosService, cadastrarUsuarioService } from "../services/usuarios-services.js";
-import type { DadosCadastroUsuario } from "../schemas/usuario-schema.js";
+import { listarUsuariosService, cadastrarUsuarioService, loginUsuarioService } from "../services/usuarios-services.js";
+import type { DadosCadastroUsuario, DadosLoginUsuario } from "../schemas/usuario-schema.js";
 
 export async function listarUsuariosController(_req: Request, res: Response): Promise<Response> {
     const resposta = await listarUsuariosService();
@@ -14,4 +14,12 @@ export async function cadastrarUsuariosController(req: Request, res: Response): 
     const resposta = await cadastrarUsuarioService(dados);
 
     return res.status(201).json(resposta);
+}
+
+export async function loginUsuarioController(req: Request, res: Response): Promise<Response> {
+    const dados = req.dadosValidados?.body as DadosLoginUsuario;
+
+    const resposta = await loginUsuarioService(dados);
+
+    return res.status(200).json(resposta);
 }

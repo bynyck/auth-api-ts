@@ -6,8 +6,13 @@ export interface Usuario {
     criadoEm: Date;
 }
 
-export type DadosCadastroUsuario = Omit<Usuario, "id" | "senhaHash" | "criadoEm"> & { senha: string };
-
 export type DadosNovoUsuario = Omit<Usuario, "id" | "criadoEm">;
 
 export type UsuarioPublico = Omit<Usuario, "senhaHash">;
+
+export type UsuarioAutenticacao = Pick<Usuario, "id" | "email" | "senhaHash">;
+
+export type RespostaLogin = {
+    sucesso: boolean,
+    mensagem: string
+}

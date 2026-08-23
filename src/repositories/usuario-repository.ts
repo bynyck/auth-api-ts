@@ -1,4 +1,4 @@
-import type { DadosNovoUsuario, UsuarioPublico } from "../types/usuario.js";
+import type { DadosNovoUsuario, UsuarioAutenticacao, UsuarioPublico } from "../types/usuario.js";
 import { pool } from "../database/db.js";
 
 export async function listarUsuariosRepository(): Promise<UsuarioPublico[]> {
@@ -46,4 +46,17 @@ export async function cadastrarUsuarioRepository(dados: DadosNovoUsuario): Promi
     }
 
     return usuario;
+}
+
+export async function buscarUsuarioParaAutenticacaoPorEmail(email: string): Promise<UsuarioAutenticacao | null> {
+    const resultado = await pool.query<UsuarioAutenticacao>(`
+        SELECT
+            id,
+            email,
+            senha_hash as "senhaHash"
+            FROM usuarios
+            WHERE email = $1
+    `, [email]);
+
+    return resultado.rows[0] ?? null;
 }
