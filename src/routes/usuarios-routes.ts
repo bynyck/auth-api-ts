@@ -16,4 +16,8 @@ usuarioRoutes.post(
     cadastrarUsuariosController
 );
 
-usuarioRoutes.post("/login", validarRequisicao(loginUsuarioSchema, "body") ,loginUsuarioController);
+usuarioRoutes.post(
+    "/login", 
+    validarRequisicao(loginUsuarioSchema, "body") ,
+    loginUsuarioController
+);

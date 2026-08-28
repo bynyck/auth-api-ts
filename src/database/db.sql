@@ -1,6 +1,6 @@
 CREATE DATABASE auth_api;
 
-USE auth_api
+USE auth_api;
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id SERIAL PRIMARY KEY,
@@ -8,4 +8,13 @@ CREATE TABLE IF NOT EXISTS usuarios (
     email VARCHAR NOT NULL UNIQUE,
     senha_hash VARCHAR NOT NULL,
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-)
+);
+
+CREATE TABLE IF NOT EXISTS sessoes (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER NOT NULL,
+    token_hash VARCHAR NOT NULL UNIQUE,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expira_em TIMESTAMP NOT NULL,
+    FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
