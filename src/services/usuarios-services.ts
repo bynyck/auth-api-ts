@@ -1,8 +1,30 @@
 import bcrypt from "bcryptjs";
+import crypto from "node:crypto";
 import { listarUsuariosRepository, cadastrarUsuarioRepository, buscarUsuarioPorEmail, buscarUsuarioParaAutenticacaoPorEmail } from "../repositories/usuario-repository.js";
 import type {DadosNovoUsuario, RespostaLogin, UsuarioPublico } from "../types/usuario.js";
 import { ErroAplicacao } from "../errors/erro-aplicacao.js";
 import type {DadosCadastroUsuario ,DadosLoginUsuario } from "../schemas/usuario-schema.js";
+import { criarSessaoRepository } from "../repositories/sessao-repository.js";
+import type { DadosNovaSessao } from "../types/sessao.js";
+
+function gerarTokenSessao(): string {
+    const token = crypto.randomBytes(32).toString("hex");
+    return token;
+}
+
+function gerarHashToken(token: string): string {
+    const hashToken = crypto.createHash("sha256").update(token).digest("hex");
+    return hashToken;
+}
+
+function gerarExpiraEm(): Date {
+    const diasParaExpirar = 7;
+    const dataExpiracao = new Date();
+
+    dataExpiracao.setDate(dataExpiracao.getDate() + diasParaExpirar);
+
+    return dataExpiracao;
+}
 
 export async function listarUsuariosService() {
     const usuarios = await listarUsuariosRepository();
@@ -59,8 +81,23 @@ export async function loginUsuarioService(dados: DadosLoginUsuario): Promise<Res
         throw new ErroAplicacao("E-mail ou senha inválidos", 401);
     }
 
+    const token = gerarTokenSessao();
+
+    const tokenHash = gerarHashToken(token);
+
+    const expiraEm = gerarExpiraEm();
+
+    const sessao: DadosNovaSessao = {
+        usuarioId: usuarioEncontrado.id,
+        tokenHash: tokenHash,
+        expiraEm: expiraEm
+    }
+
+    await criarSessaoRepository(sessao);
+
     return {
         sucesso: true,
-        mensagem: "Usuário validado"
+        mensagem: "Usuário validado",
+        token
     }
 }

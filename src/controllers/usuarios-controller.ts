@@ -21,5 +21,15 @@ export async function loginUsuarioController(req: Request, res: Response): Promi
 
     const resposta = await loginUsuarioService(dados);
 
-    return res.status(200).json(resposta);
+    res.cookie("sessionToken", resposta.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    return res.status(200).json({
+        sucesso: true,
+        mensagem: "Usuário validado"
+    });
 }

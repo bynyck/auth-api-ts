@@ -14,5 +14,6 @@ export type UsuarioAutenticacao = Pick<Usuario, "id" | "email" | "senhaHash">;
 
 export type RespostaLogin = {
     sucesso: boolean,
-    mensagem: string
+    mensagem: string,
+    token: string
 }
